@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.github.merchantpug.bella.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AnimalEntityMixin",
+    "CatEntityMixin",
+    "WolfEntityMixin"
+  ],
+  "client": [
+    "client.AnimalModelAccessor",
+    "client.MobEntityRendererMixin",
+    "client.ModelPartAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}
