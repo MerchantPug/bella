@@ -39,7 +39,9 @@ public class BellHandleUtil {
 	}
 
 	public static ActionResult removeBellFromEntity(AnimalEntity animalEntity, PlayerEntity player, Hand hand, ItemStack stack) {
-		player.setStackInHand(hand, new ItemStack(Items.BELL));
+		if (!player.world.isClient) {
+			player.setStackInHand(hand, new ItemStack(Items.BELL));
+		}
 		BellaComponents.BELL_COMPONENT.get(animalEntity).setBell(false);
 		return ActionResult.success(player.world.isClient);
 	}

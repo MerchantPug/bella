@@ -38,7 +38,7 @@ public abstract class AnimalEntityMixin extends PassiveEntity implements AnimalE
 			if (actionResult != ActionResult.PASS) {
 				cir.setReturnValue(actionResult);
 			}
-		} else if (stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+		} else if (hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
 			ActionResult actionResult = BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand, stack);
 			cir.setReturnValue(actionResult);
 		}
