@@ -30,12 +30,12 @@ public abstract class WolfEntityMixin extends TameableEntity {
 	private void bella$checkIfEntityHasAnimalModel(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir, ItemStack stack, Item item) {
 		if (!this.isTamed() || !this.isOwner(player)) return;
 		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellHandleUtil.addBellToEntity((AnimalEntity)(Object)this, player, hand, stack);
+			ActionResult actionResult = BellHandleUtil.addBellToEntity((AnimalEntity)(Object)this, player, stack);
 			if (actionResult != ActionResult.PASS) {
 				cir.setReturnValue(actionResult);
 			}
 		} else if (hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand, stack);
+			ActionResult actionResult = BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand);
 			cir.setReturnValue(actionResult);
 		}
 	}

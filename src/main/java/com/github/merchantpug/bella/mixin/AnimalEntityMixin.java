@@ -34,12 +34,12 @@ public abstract class AnimalEntityMixin extends PassiveEntity implements AnimalE
 	@Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/AnimalEntity;isBreedingItem(Lnet/minecraft/item/ItemStack;)Z"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void bella$addBellToEntity(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir, ItemStack stack) {
 		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellHandleUtil.addBellToEntity((AnimalEntity)(Object)this, player, hand, stack);
+			ActionResult actionResult = BellHandleUtil.addBellToEntity((AnimalEntity)(Object)this, player, stack);
 			if (actionResult != ActionResult.PASS) {
 				cir.setReturnValue(actionResult);
 			}
 		} else if (hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand, stack);
+			ActionResult actionResult = BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand);
 			cir.setReturnValue(actionResult);
 		}
 	}

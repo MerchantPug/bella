@@ -18,8 +18,8 @@ import net.minecraft.util.Hand;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 public class BellHandleUtil {
-	public static ActionResult addBellToEntity(AnimalEntity animalEntity, PlayerEntity player, Hand hand, ItemStack stack) {
-		if (player.world.isClient) {
+	public static ActionResult addBellToEntity(AnimalEntity animalEntity, PlayerEntity player, ItemStack stack) {
+		if (player.world.isClient && !((AnimalEntityAccess)animalEntity).bella$hasAnimalModel()) {
 			EntityRenderer<?> renderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(animalEntity);
 			if (renderer instanceof LivingEntityRenderer<?,?> livingEntityRenderer && livingEntityRenderer.getModel() instanceof AnimalModel<?>) {
 				PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
@@ -38,7 +38,7 @@ public class BellHandleUtil {
 		return ActionResult.PASS;
 	}
 
-	public static ActionResult removeBellFromEntity(AnimalEntity animalEntity, PlayerEntity player, Hand hand, ItemStack stack) {
+	public static ActionResult removeBellFromEntity(AnimalEntity animalEntity, PlayerEntity player, Hand hand) {
 		if (!player.world.isClient) {
 			player.setStackInHand(hand, new ItemStack(Items.BELL));
 		}
