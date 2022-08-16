@@ -120,8 +120,6 @@ public class EntityBellFeatureRenderer<T extends MobEntity, M extends AnimalMode
 			if (((AnimalEntityAccess)animalEntity).bella$getBellTicks() > 0) {
 				float ringTicksWithTickDelta = ((AnimalEntityAccess)animalEntity).bella$getBellTicks() + tickDelta;
 				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(BellHandleUtil.getBellRotationRadians(ringTicksWithTickDelta, ((AnimalEntityAccess)animalEntity).bella$getPreviousMovement())));
-				Bella.LOGGER.info(String.valueOf(((AnimalEntityAccess)animalEntity).bella$getPreviousMovement()));
-				Bella.LOGGER.info(String.valueOf(BellHandleUtil.getBellRotationRadians(ringTicksWithTickDelta, ((AnimalEntityAccess)animalEntity).bella$getPreviousMovement())));
 			}
 
 			this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(SKIN)), light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);

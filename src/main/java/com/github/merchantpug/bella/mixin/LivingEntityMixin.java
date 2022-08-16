@@ -59,7 +59,6 @@ public abstract class LivingEntityMixin extends Entity {
 					this.bella$prevRotationRadians = 0;
 				} else if (bellTicks > 0) {
 					if (BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement) > 0.0F && this.bella$prevRotationRadians < 0.0F || BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement) < 0.0F && this.bella$prevRotationRadians > 0.0F) {
-						Bella.LOGGER.info("Bell Volume increase: " + (BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement) + this.bella$prevRotationRadians));
 						this.playSound(SoundEvents.BLOCK_BELL_USE, Math.min(Math.abs(BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement) + this.bella$prevRotationRadians) * 2, 1.0F), this.random.nextFloat() * 0.4F + 1.0F);
 					}
 					((AnimalEntityAccess)this).bella$setBellTicks(((AnimalEntityAccess)this).bella$getBellTicks() + 1);
