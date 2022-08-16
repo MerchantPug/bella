@@ -13,7 +13,9 @@ public class BellaClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		EntityModelLayerRegistry.registerModelLayer(EntityBellModel.LAYER_LOCATION, EntityBellModel::createModelData);
+
 		BellRenderOverrideRegistry.registerBellRenderModifiers(new BellRenderModifiers(EntityType.SHEEP, 0.0F, 0.0F, -3.0F, 1.0F));
 		BellRenderOverrideRegistry.registerBellRenderModifiers(new BellRenderModifiers(EntityType.CAT, animalEntity -> ((CatEntity)animalEntity).isSitting(), 0.0F, 0.0F, 10.0F));
+		BellRenderOverrideRegistry.registerBellRenderModifiers(new BellRenderModifiers(EntityType.HOGLIN, 0.0F, 6.0F, 0.0F));
 	}
 }

@@ -15,6 +15,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -22,7 +23,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(AnimalEntity.class)
 public abstract class AnimalEntityMixin extends PassiveEntity implements AnimalEntityAccess {
+	@Unique
 	private boolean bella$hasAnimalModel = false;
+	@Unique
+	private int bella$bellTicks;
+	@Unique
+	private float bella$previousMovement;
 
 	protected AnimalEntityMixin(EntityType<? extends PassiveEntity> entityType, World world) {
 		super(entityType, world);
@@ -39,8 +45,7 @@ public abstract class AnimalEntityMixin extends PassiveEntity implements AnimalE
 				cir.setReturnValue(actionResult);
 			}
 		} else if (hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand);
-			cir.setReturnValue(actionResult);
+			cir.setReturnValue(BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand));
 		}
 	}
 
@@ -52,5 +57,25 @@ public abstract class AnimalEntityMixin extends PassiveEntity implements AnimalE
 	@Override
 	public void bella$setHasAnimalModel(boolean value) {
 		this.bella$hasAnimalModel = value;
+	}
+
+	@Override
+	public int bella$getBellTicks() {
+		return bella$bellTicks;
+	}
+
+	@Override
+	public void bella$setBellTicks(int value) {
+		this.bella$bellTicks = value;
+	}
+
+	@Override
+	public float bella$getPreviousMovement() {
+		return this.bella$previousMovement;
+	}
+
+	@Override
+	public void bella$setPreviousMovement(float value) {
+		this.bella$previousMovement = value;
 	}
 }

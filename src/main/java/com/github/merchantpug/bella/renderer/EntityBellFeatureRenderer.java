@@ -1,6 +1,8 @@
 package com.github.merchantpug.bella.renderer;
 
 import com.github.merchantpug.bella.Bella;
+import com.github.merchantpug.bella.access.AnimalEntityAccess;
+import com.github.merchantpug.bella.util.BellHandleUtil;
 import com.github.merchantpug.bella.util.BellRenderOverrideRegistry;
 import com.github.merchantpug.bella.mixin.client.AnimalModelAccessor;
 import com.github.merchantpug.bella.mixin.client.ModelPartAccessor;
@@ -19,10 +21,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class EntityBellFeatureRenderer<T extends MobEntity, M extends AnimalModel<T>> extends FeatureRenderer<T, M> {
@@ -116,13 +116,16 @@ public class EntityBellFeatureRenderer<T extends MobEntity, M extends AnimalMode
 				this.model.bellBody.scaleY *= 0.6F;
 				this.model.bellBody.scaleZ *= 0.6F;
 			}
-			if (referenceModelPart.pitch != 0) {
-				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(referenceModelPart.pitch));
+
+			if (((AnimalEntityAccess)animalEntity).bella$getBellTicks() > 0) {
+				float ringTicksWithTickDelta = ((AnimalEntityAccess)animalEntity).bella$getBellTicks() + tickDelta;
+				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(BellHandleUtil.getBellRotationRadians(ringTicksWithTickDelta, ((AnimalEntityAccess)animalEntity).bella$getPreviousMovement())));
+				Bella.LOGGER.info(String.valueOf(((AnimalEntityAccess)animalEntity).bella$getPreviousMovement()));
+				Bella.LOGGER.info(String.valueOf(BellHandleUtil.getBellRotationRadians(ringTicksWithTickDelta, ((AnimalEntityAccess)animalEntity).bella$getPreviousMovement())));
 			}
 
-			Vec3d velocity = entity.getVelocity();
-
 			this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(SKIN)), light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+
 		}
 		matrices.pop();
 	}

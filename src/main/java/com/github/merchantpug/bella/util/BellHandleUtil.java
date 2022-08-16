@@ -32,7 +32,7 @@ public class BellHandleUtil {
 			if (!player.getAbilities().creativeMode) {
 				stack.decrement(1);
 			}
-			BellaComponents.BELL_COMPONENT.get(animalEntity).setBell(true);
+			BellaComponents.BELL_COMPONENT.get(animalEntity).setBellAndSync(true);
 			return ActionResult.success(player.world.isClient);
 		}
 		return ActionResult.PASS;
@@ -42,7 +42,11 @@ public class BellHandleUtil {
 		if (!player.world.isClient) {
 			player.setStackInHand(hand, new ItemStack(Items.BELL));
 		}
-		BellaComponents.BELL_COMPONENT.get(animalEntity).setBell(false);
+		BellaComponents.BELL_COMPONENT.get(animalEntity).setBellAndSync(false);
 		return ActionResult.success(player.world.isClient);
+	}
+
+	public static float getBellRotationRadians(float bellTicks, float previousMovement) {
+		return (float)(previousMovement / 16.0F * ((Math.sin(previousMovement / 1080.0F * bellTicks * Math.PI)) / ((4.0F + bellTicks) / 2.0F)));
 	}
 }

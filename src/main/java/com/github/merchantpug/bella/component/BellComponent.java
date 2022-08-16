@@ -43,6 +43,11 @@ public class BellComponent implements IBellComponent, AutoSyncedComponent {
 	@Override
 	public void setBell(boolean value) {
 		this.bell = value;
-		BellaComponents.BELL_COMPONENT.sync(provider);
+	}
+
+	@Override
+	public void setBellAndSync(boolean value) {
+		this.bell = value;
+		BellaComponents.BELL_COMPONENT.sync(this.provider);
 	}
 }
