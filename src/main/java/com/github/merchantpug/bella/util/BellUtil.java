@@ -1,8 +1,6 @@
 package com.github.merchantpug.bella.util;
 
-import com.github.merchantpug.bella.Bella;
 import com.github.merchantpug.bella.access.AnimalEntityAccess;
-import com.github.merchantpug.bella.access.LivingEntityAccess;
 import com.github.merchantpug.bella.registry.BellaComponents;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;

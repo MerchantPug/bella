@@ -1,16 +1,10 @@
 package com.github.merchantpug.bella.mixin;
 
-import com.github.merchantpug.bella.Bella;
-import com.github.merchantpug.bella.access.AnimalEntityAccess;
 import com.github.merchantpug.bella.access.LivingEntityAccess;
 import com.github.merchantpug.bella.networking.BellaPackets;
 import com.github.merchantpug.bella.registry.BellaComponents;
 import com.github.merchantpug.bella.registry.BellaGameEvents;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.model.AnimalModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -18,13 +12,10 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,8 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements LivingEntityAccess {
-	@Unique
-	private float bella$prevBellSoundTime;
 	@Unique
 	private float bella$bellVelocity;
 	@Unique
@@ -55,19 +44,6 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityAc
 
 	public LivingEntityMixin(EntityType<?> entityType, World world) {
 		super(entityType, world);
-	}
-
-	@Inject(method = "onSpawnPacket", at = @At("TAIL"))
-	private void bella$setAnimalModel(EntitySpawnS2CPacket packet, CallbackInfo ci) {
-		if ((LivingEntity)(Object)this instanceof AnimalEntity && world.isClient && !((AnimalEntityAccess)this).bella$hasAnimalModel()) {
-			EntityRenderer<?> renderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(this);
-			if (renderer instanceof LivingEntityRenderer<?,?> livingEntityRenderer && livingEntityRenderer.getModel() instanceof AnimalModel<?>) {
-				((AnimalEntityAccess)this).bella$setHasAnimalModel(true);
-				PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-				buf.writeInt(packet.getId());
-				ClientPlayNetworking.send(BellaPackets.SET_ANIMAL_MODEL, buf);
-			}
-		}
 	}
 
 	@Inject(method = "dropLoot", at = @At(value = "HEAD"))

@@ -1,9 +1,7 @@
 package com.github.merchantpug.bella.renderer;
 
 import com.github.merchantpug.bella.Bella;
-import com.github.merchantpug.bella.access.AnimalEntityAccess;
 import com.github.merchantpug.bella.access.LivingEntityAccess;
-import com.github.merchantpug.bella.util.BellUtil;
 import com.github.merchantpug.bella.util.BellRenderOverrideRegistry;
 import com.github.merchantpug.bella.mixin.client.AnimalModelAccessor;
 import com.github.merchantpug.bella.mixin.client.ModelPartAccessor;

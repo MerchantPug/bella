@@ -13,6 +13,7 @@
   ],
   "client": [
     "client.AnimalModelAccessor",
+    "client.LivingEntityMixinClient",
     "client.MobEntityRendererMixin",
     "client.ModelPartAccessor"
   ],
