@@ -2,7 +2,8 @@ package com.github.merchantpug.bella.renderer;
 
 import com.github.merchantpug.bella.Bella;
 import com.github.merchantpug.bella.access.AnimalEntityAccess;
-import com.github.merchantpug.bella.util.BellHandleUtil;
+import com.github.merchantpug.bella.access.LivingEntityAccess;
+import com.github.merchantpug.bella.util.BellUtil;
 import com.github.merchantpug.bella.util.BellRenderOverrideRegistry;
 import com.github.merchantpug.bella.mixin.client.AnimalModelAccessor;
 import com.github.merchantpug.bella.mixin.client.ModelPartAccessor;
@@ -117,10 +118,7 @@ public class EntityBellFeatureRenderer<T extends MobEntity, M extends AnimalMode
 				this.model.bellBody.scaleZ *= 0.6F;
 			}
 
-			if (((AnimalEntityAccess)animalEntity).bella$getBellTicks() > 0) {
-				float ringTicksWithTickDelta = ((AnimalEntityAccess)animalEntity).bella$getBellTicks() + tickDelta;
-				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(BellHandleUtil.getBellRotationRadians(ringTicksWithTickDelta, ((AnimalEntityAccess)animalEntity).bella$getPreviousMovement())));
-			}
+			matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion((float) (((LivingEntityAccess)animalEntity).bella$getBellRotation() * Math.PI / 180.0F)));
 
 			this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(SKIN)), light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 

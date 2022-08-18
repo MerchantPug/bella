@@ -6,6 +6,8 @@
   "mixins": [
     "AnimalEntityMixin",
     "CatEntityMixin",
+    "HoglinEntityMixin",
+    "HorseEntityMixin",
     "LivingEntityMixin",
     "WolfEntityMixin"
   ],

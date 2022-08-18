@@ -2,15 +2,29 @@ package com.github.merchantpug.bella.mixin;
 
 import com.github.merchantpug.bella.Bella;
 import com.github.merchantpug.bella.access.AnimalEntityAccess;
+import com.github.merchantpug.bella.access.LivingEntityAccess;
+import com.github.merchantpug.bella.networking.BellaPackets;
 import com.github.merchantpug.bella.registry.BellaComponents;
-import com.github.merchantpug.bella.util.BellHandleUtil;
+import com.github.merchantpug.bella.registry.BellaGameEvents;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.model.AnimalModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.item.Items;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
+import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
+import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -19,11 +33,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin extends Entity implements LivingEntityAccess {
+	@Unique
+	private float bella$prevBellSoundTime;
+	@Unique
+	private float bella$bellVelocity;
+	@Unique
+	private float bella$bellPosition;
+	@Unique
+	private float bella$prevBellPosition;
+	@Unique
+	private float bella$prevPrevBellPosition;
 	@Unique
 	private float bella$prevPrevHeadYaw;
-	@Unique
-	private float bella$prevRotationRadians;
 
 	@Shadow
 	public float headYaw;
@@ -35,37 +57,71 @@ public abstract class LivingEntityMixin extends Entity {
 		super(entityType, world);
 	}
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void bella$setLoadedIn(EntityType entityType, World world, CallbackInfo ci) {
-		this.bella$prevPrevHeadYaw = this.headYaw;
+	@Inject(method = "onSpawnPacket", at = @At("TAIL"))
+	private void bella$setAnimalModel(EntitySpawnS2CPacket packet, CallbackInfo ci) {
+		if ((LivingEntity)(Object)this instanceof AnimalEntity && world.isClient && !((AnimalEntityAccess)this).bella$hasAnimalModel()) {
+			EntityRenderer<?> renderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(this);
+			if (renderer instanceof LivingEntityRenderer<?,?> livingEntityRenderer && livingEntityRenderer.getModel() instanceof AnimalModel<?>) {
+				((AnimalEntityAccess)this).bella$setHasAnimalModel(true);
+				PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+				buf.writeInt(packet.getId());
+				ClientPlayNetworking.send(BellaPackets.SET_ANIMAL_MODEL, buf);
+			}
+		}
 	}
 
-	@Inject(method = "tick", at = @At("TAIL"))
+	@Inject(method = "dropLoot", at = @At(value = "HEAD"))
+	private void bella$dropBellOnDeath(DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
+		if ((LivingEntity)(Object)this instanceof AnimalEntity && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			this.dropStack(Items.BELL.getDefaultStack());
+		}
+	}
+
+	@Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;tickStatusEffects()V"))
 	private void bella$tickBell(CallbackInfo ci) {
-		if (((LivingEntity)(Object)this instanceof AnimalEntity) && BellaComponents.BELL_COMPONENT.isProvidedBy(this)) {
-			if (BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-				float f = MathHelper.clamp(this.headYaw - this.bella$prevPrevHeadYaw, -90.0F, 90.0F);
-				int bellTicks = ((AnimalEntityAccess)this).bella$getBellTicks();
+		if (!this.world.isClient) {
+			if (((LivingEntity)(Object)this instanceof AnimalEntity) && BellaComponents.BELL_COMPONENT.isProvidedBy(this)) {
+				if (BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+					bella$bellVelocity -= 0.05F * bella$bellPosition + 0.02F * bella$bellVelocity - ((((headYaw + bella$prevPrevHeadYaw - 2 * prevHeadYaw + 180.0) % 360) - 180.0) * 0.08);
+					bella$bellPosition += bella$bellVelocity;
 
-				if ((f > 10.0 || f < -10.0) && bellTicks == 0) {
-					((AnimalEntityAccess)this).bella$setBellTicks(1);
-					((AnimalEntityAccess)this).bella$setPreviousMovement(f);
-				}
+					PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+					buf.writeInt(this.getId());
+					buf.writeFloat(bella$bellPosition);
+					ServerPlayNetworking.send(((ServerWorld)this.world).getPlayers(), BellaPackets.SYNC_BELL_POSITION, buf);
 
-				float previousMovement = ((AnimalEntityAccess)this).bella$getPreviousMovement();
-				if (bellTicks > previousMovement * 1.33) {
-					((AnimalEntityAccess)this).bella$setBellTicks(0);
-					((AnimalEntityAccess)this).bella$setPreviousMovement(0);
-					this.bella$prevRotationRadians = 0;
-				} else if (bellTicks > 0) {
-					if (BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement) > 0.0F && this.bella$prevRotationRadians < 0.0F || BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement) < 0.0F && this.bella$prevRotationRadians > 0.0F) {
-						this.playSound(SoundEvents.BLOCK_BELL_USE, Math.min(Math.abs(BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement) + this.bella$prevRotationRadians) * 2, 1.0F), this.random.nextFloat() * 0.4F + 1.0F);
+					if ((this.bella$bellPosition - this.bella$prevBellPosition) * (this.bella$prevBellPosition - this.bella$prevPrevBellPosition) < 0.0F) {
+						this.playSound(SoundEvents.BLOCK_BELL_USE, (float) Math.abs(bella$bellPosition / 8.0 * Math.PI / 180.0F), this.random.nextFloat() * 0.4F + 1.0F);
+						this.emitGameEvent(BellaGameEvents.ENTITY_BELL_RING);
 					}
-					((AnimalEntityAccess)this).bella$setBellTicks(((AnimalEntityAccess)this).bella$getBellTicks() + 1);
-					this.bella$prevRotationRadians = BellHandleUtil.getBellRotationRadians(bellTicks, previousMovement);
+
+					this.bella$prevPrevHeadYaw = this.prevHeadYaw;
+
+					this.bella$prevPrevBellPosition = this.bella$prevBellPosition;
+					this.bella$prevBellPosition = this.bella$bellPosition;
 				}
 			}
-			this.bella$prevPrevHeadYaw = this.prevHeadYaw;
 		}
+
+		if (BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			if (!this.world.isClient && this.bella$prevPrevHeadYaw != 0.0F || this.bella$prevBellPosition != 0.0F || this.bella$prevPrevBellPosition != 0.0F) {
+				this.bella$prevBellPosition = 0.0F;
+				this.bella$prevPrevBellPosition = 0.0F;
+				this.bella$prevPrevHeadYaw = 0.0F;
+			}
+			if (this.bella$bellPosition != 0.0F) {
+				this.bella$bellPosition = 0.0F;
+			}
+		}
+	}
+
+	@Override
+	public float bella$getBellRotation() {
+		return this.bella$bellPosition;
+	}
+
+	@Override
+	public void bella$setBellRotation(float value) {
+		this.bella$bellPosition = value;
 	}
 }

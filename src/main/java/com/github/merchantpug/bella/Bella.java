@@ -1,6 +1,7 @@
 package com.github.merchantpug.bella;
 
 import com.github.merchantpug.bella.networking.BellaPacketsC2S;
+import com.github.merchantpug.bella.registry.BellaGameEvents;
 import net.minecraft.util.Identifier;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
@@ -23,6 +24,7 @@ public class Bella implements ModInitializer {
 		}
 
 		BellaPacketsC2S.register();
+		BellaGameEvents.init();
 
 		LOGGER.info("{} v{} has initialized. Ring ring ring!", mod.metadata().name(), VERSION);
 	}

@@ -2,7 +2,7 @@ package com.github.merchantpug.bella.mixin;
 
 import com.github.merchantpug.bella.registry.BellaComponents;
 import com.github.merchantpug.bella.registry.BellaTags;
-import com.github.merchantpug.bella.util.BellHandleUtil;
+import com.github.merchantpug.bella.util.BellUtil;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -27,16 +27,36 @@ public abstract class WolfEntityMixin extends TameableEntity {
 	}
 
 	@Inject(method = "interactMob", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;isClient:Z"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private void bella$checkIfEntityHasAnimalModel(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir, ItemStack stack, Item item) {
+	private void bella$handleBell(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir, ItemStack stack, Item item) {
 		if (!this.isTamed() || !this.isOwner(player)) return;
 		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellHandleUtil.addBellToEntity((AnimalEntity)(Object)this, player, stack);
+			ActionResult actionResult = BellUtil.addBellToEntity((AnimalEntity)(Object)this, player, stack);
 			if (actionResult != ActionResult.PASS) {
 				cir.setReturnValue(actionResult);
 			}
 		} else if (hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellHandleUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand);
+			ActionResult actionResult = BellUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand);
 			cir.setReturnValue(actionResult);
+		}
+	}
+
+	@Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/TameableEntity;interactMob(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;", ordinal = 0), cancellable = true)
+	private void bella$cancelBellRemovalIfNotOwnerOne(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+		ItemStack stack = player.getStackInHand(hand);
+		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			cir.setReturnValue(ActionResult.PASS);
+		} else if (!this.isOwner(player) && hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			cir.setReturnValue(ActionResult.PASS);
+		}
+	}
+
+	@Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/TameableEntity;interactMob(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;", ordinal = 1), cancellable = true)
+	private void bella$cancelBellRemovalIfNotOwnerTwo(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+		ItemStack stack = player.getStackInHand(hand);
+		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			cir.setReturnValue(ActionResult.PASS);
+		} else if (!this.isOwner(player) && hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			cir.setReturnValue(ActionResult.PASS);
 		}
 	}
 }
