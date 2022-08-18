@@ -39,4 +39,14 @@ public abstract class CatEntityMixin extends TameableEntity {
 			cir.setReturnValue(actionResult);
 		}
 	}
+
+	@Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/TameableEntity;interactMob(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;", ordinal = 1), cancellable = true)
+	private void bella$cancelBellRemovalIfNotOwnerTwo(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+		ItemStack stack = player.getStackInHand(hand);
+		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			cir.setReturnValue(ActionResult.PASS);
+		} else if (!this.isOwner(player) && hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			cir.setReturnValue(ActionResult.PASS);
+		}
+	}
 }
