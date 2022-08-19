@@ -58,7 +58,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityAc
 		if (!this.world.isClient) {
 			if (((LivingEntity)(Object)this instanceof AnimalEntity) && BellaComponents.BELL_COMPONENT.isProvidedBy(this)) {
 				if (BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-					bella$bellVelocity -= 0.05F * bella$bellPosition + 0.02F * bella$bellVelocity - ((((headYaw + bella$prevPrevHeadYaw - 2 * prevHeadYaw + 180.0) % 360) - 180.0) * 0.08);
+					bella$bellVelocity -= 0.05F * bella$bellPosition + 0.02F * bella$bellVelocity - ((((headYaw + bella$prevPrevHeadYaw - 2 * prevHeadYaw + 180.0) % 360) - 180.0) * 0.04);
 					bella$bellPosition += bella$bellVelocity;
 
 					PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
