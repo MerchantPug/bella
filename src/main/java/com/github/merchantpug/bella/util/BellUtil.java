@@ -11,8 +11,7 @@ import net.minecraft.util.Hand;
 
 public class BellUtil {
 	public static ActionResult addBellToEntity(AnimalEntity animalEntity, PlayerEntity player, ItemStack stack) {
-
-		if (((AnimalEntityAccess)animalEntity).bella$hasAnimalModel()) {
+		if (player.getAbilities().allowModifyWorld && ((AnimalEntityAccess)animalEntity).bella$hasAnimalModel()) {
 			if (!player.getAbilities().creativeMode) {
 				stack.decrement(1);
 			}
@@ -25,10 +24,13 @@ public class BellUtil {
 	}
 
 	public static ActionResult removeBellFromEntity(AnimalEntity animalEntity, PlayerEntity player, Hand hand) {
-		if (!player.world.isClient) {
-			player.setStackInHand(hand, new ItemStack(Items.BELL));
-			BellaComponents.BELL_COMPONENT.get(animalEntity).setBellAndSync(false);
+		if (player.getAbilities().allowModifyWorld) {
+			if (!player.world.isClient) {
+				player.setStackInHand(hand, new ItemStack(Items.BELL));
+				BellaComponents.BELL_COMPONENT.get(animalEntity).setBellAndSync(false);
+			}
+			return ActionResult.success(player.world.isClient);
 		}
-		return ActionResult.success(player.world.isClient);
+		return ActionResult.PASS;
 	}
 }
