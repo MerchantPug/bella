@@ -1,6 +1,7 @@
 package com.github.merchantpug.bella.mixin.client;
 
 import com.github.merchantpug.bella.renderer.EntityBellFeatureRenderer;
+import com.sun.jna.platform.win32.WinBase;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.MobEntityRenderer;
@@ -20,8 +21,6 @@ public abstract class MobEntityRendererMixin<T extends MobEntity, M extends Enti
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void bella$injectBellRendererIntoAnimals(EntityRendererFactory.Context context, EntityModel entityModel, float f, CallbackInfo ci) {
-		if (entityModel instanceof AnimalModel<?>) {
-			this.addFeature(new EntityBellFeatureRenderer((MobEntityRenderer)(Object)this, context.getModelLoader()));
-		}
+		this.addFeature(new EntityBellFeatureRenderer((MobEntityRenderer)(Object)this, context.getModelLoader()));
 	}
 }

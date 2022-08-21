@@ -30,21 +30,6 @@ public abstract class AnimalEntityMixin extends PassiveEntity implements AnimalE
 		super(entityType, world);
 	}
 
-	@Shadow
-	public abstract ActionResult interactMob(PlayerEntity player, Hand hand);
-
-	@Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/AnimalEntity;isBreedingItem(Lnet/minecraft/item/ItemStack;)Z"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private void bella$handleBell(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir, ItemStack stack) {
-		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			ActionResult actionResult = BellUtil.addBellToEntity((AnimalEntity)(Object)this, player, stack);
-			if (actionResult != ActionResult.PASS) {
-				cir.setReturnValue(actionResult);
-			}
-		} else if (hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
-			cir.setReturnValue(BellUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand));
-		}
-	}
-
 	@Override
 	public boolean bella$hasAnimalModel() {
 		return bella$hasAnimalModel;

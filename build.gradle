@@ -12,6 +12,14 @@ repositories {
 		name = 'Ladysnake Mods'
 		url = 'https://ladysnake.jfrog.io/artifactory/mods'
 	}
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
+	maven {
+		name = "Ladysnake Libs"
+		url = "https://ladysnake.jfrog.io/artifactory/mods"
+	}
 }
 
 // All the dependencies are declared at gradle/libs.version.toml and referenced with "libs.<id>"
@@ -27,6 +35,13 @@ dependencies {
 
 	modImplementation libs.bundles.cardinal.components.api
 	include libs.bundles.cardinal.components.api
+
+	modImplementation(libs.trinkets) {
+		transitive = false
+	}
+	// modCompileOnly libs.trinkets
+
+	modLocalRuntime libs.modmenu
 }
 
 processResources {

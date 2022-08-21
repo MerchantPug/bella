@@ -34,6 +34,9 @@ public abstract class CatEntityMixin extends TameableEntity {
 			if (actionResult != ActionResult.PASS) {
 				cir.setReturnValue(actionResult);
 			}
+		} else if (stack.isOf(Items.STRING) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell() && !BellaComponents.BELL_COMPONENT.get(this).isStrung()) {
+			ActionResult actionResult = BellUtil.stringBell((AnimalEntity)(Object)this, player, stack);
+			cir.setReturnValue(actionResult);
 		} else if (hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
 			ActionResult actionResult = BellUtil.removeBellFromEntity((AnimalEntity)(Object)this, player, hand);
 			cir.setReturnValue(actionResult);
@@ -45,7 +48,9 @@ public abstract class CatEntityMixin extends TameableEntity {
 		ItemStack stack = player.getStackInHand(hand);
 		if (stack.isOf(Items.BELL) && !this.getType().isIn(BellaTags.BLACKLIST) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && !BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
 			cir.setReturnValue(ActionResult.PASS);
-		} else if (!this.isOwner(player) && hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+		} else if (stack.isOf(Items.STRING) && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell() && !BellaComponents.BELL_COMPONENT.get(this).isStrung()) {
+			cir.setReturnValue(ActionResult.PASS);
+		}  else if (!this.isOwner(player) && hand.equals(Hand.MAIN_HAND) && stack.isEmpty() && player.isSneaking() && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
 			cir.setReturnValue(ActionResult.PASS);
 		}
 	}

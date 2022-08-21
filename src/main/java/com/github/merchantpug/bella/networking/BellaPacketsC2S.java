@@ -4,6 +4,7 @@ import com.github.merchantpug.bella.Bella;
 import com.github.merchantpug.bella.access.AnimalEntityAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;

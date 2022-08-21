@@ -8,14 +8,21 @@
     "CatEntityMixin",
     "HoglinEntityMixin",
     "HorseEntityMixin",
+    "ItemMixin",
     "LivingEntityMixin",
+    "MobEntityMixin",
+    "PlayerScreenHandlerMixin",
+    "SlotMixin",
     "WolfEntityMixin"
   ],
   "client": [
     "client.AnimalModelAccessor",
+    "client.BeeEntityModelAccessor",
+    "client.HeadFeatureRendererMixin",
     "client.LivingEntityMixinClient",
     "client.MobEntityRendererMixin",
-    "client.ModelPartAccessor"
+    "client.ModelPartAccessor",
+    "client.PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

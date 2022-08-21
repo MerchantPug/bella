@@ -1,0 +1,8 @@
+{
+  "validator_predicates": [
+    "bella:only_one_bell"
+  ],
+  "quick_move_predicates": [
+    "bella:dont_quick_stack_bell"
+  ]
+}

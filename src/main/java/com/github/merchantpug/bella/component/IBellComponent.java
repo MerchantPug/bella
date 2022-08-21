@@ -5,5 +5,9 @@ import dev.onyxstudios.cca.api.v3.component.Component;
 public interface IBellComponent extends Component {
 	boolean hasBell();
 	void setBell(boolean value);
-	void setBellAndSync(boolean value);
+
+	boolean isStrung();
+	void setStrung(boolean value);
+
+	void sync();
 }

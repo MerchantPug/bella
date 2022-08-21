@@ -21,6 +21,7 @@
 		"entrypoints": {
 			"init": "com.github.merchantpug.bella.Bella",
 			"client_init": "com.github.merchantpug.bella.BellaClient",
+			"bella": "com.github.merchantpug.bella.BellaBellPlugin",
 			"cardinal-components": "com.github.merchantpug.bella.registry.BellaComponents"
 		},
 		"depends": [
