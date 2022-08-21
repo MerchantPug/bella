@@ -27,6 +27,9 @@ public class BellaPacketsS2C {
 		float bellRotation = buf.readFloat();
 		minecraftClient.execute(() -> {
 			Entity entity = clientPlayNetworkHandler.getWorld().getEntityById(entityId);
+			if (entity == null) {
+				return;
+			}
 			if (!(entity instanceof LivingEntity livingEntity)) {
 				Bella.LOGGER.warn("Tried modifying non LivingEntity's bell rotation.");
 				return;
