@@ -55,6 +55,7 @@ jobs:
             1.19.2
           dependencies: |
             qsl | depends | *
+            trinkets | recommends | *
           java: |
             17
 
@@ -82,6 +83,7 @@ jobs:
             1.19.2
           dependencies: |
             qsl | depends | *
+            trinkets | recommends | *
           java: |
             17
 
