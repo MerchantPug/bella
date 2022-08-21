@@ -4,9 +4,9 @@ import com.github.merchantpug.bella.registry.BellaComponents;
 import com.github.merchantpug.bella.registry.BellaTags;
 import com.github.merchantpug.bella.util.BellUtil;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.AbstractDonkeyEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.HorseBaseEntity;
-import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -19,10 +19,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(targets = { "net/minecraft/entity/passive/HorseEntity", "net/minecraft/entity/mob/SkeletonHorseEntity", "net/minecraft/entity/mob/ZombieHorseEntity" })
-public class HorseEntityMixin extends HorseBaseEntity {
+@Mixin(AbstractDonkeyEntity.class)
+public class AbstractDonkeyEntityMixin extends HorseBaseEntity {
 
-	protected HorseEntityMixin(EntityType<? extends HorseBaseEntity> entityType, World world) {
+	protected AbstractDonkeyEntityMixin(EntityType<? extends HorseBaseEntity> entityType, World world) {
 		super(entityType, world);
 	}
 

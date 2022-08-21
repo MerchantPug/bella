@@ -42,8 +42,8 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           # Config
-          name: Bella v1.1.0 (Quilt 1.19.2)
-          version: 1.1.0+1.19.2
+          name: Bella v1.1.1 (Quilt 1.19.2)
+          version: 1.1.1+1.19.2
           version-type: release
           changelog-file: CHANGELOG.md
           files-primary: build/libs/!(*-@(dev|sources)).jar
@@ -66,14 +66,14 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.1
         with:
           # GitHub
-          github-tag: v1.1.0-1.19.2
+          github-tag: v1.1.1-1.19.2
           github-draft: false
           github-prerelease: false
           github-commitish: 1.19
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          name: Bella v1.1.0 (Quilt 1.19.2)
-          version: 1.1.0+1.19.2
+          name: Bella v1.1.1 (Quilt 1.19.2)
+          version: 1.1.1+1.19.2
           version-type: release
           changelog-file: CHANGELOG.md
 

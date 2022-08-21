@@ -4,6 +4,7 @@
   "package": "com.github.merchantpug.bella.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AbstractDonkeyEntityMixin",
     "AnimalEntityMixin",
     "CatEntityMixin",
     "HoglinEntityMixin",
