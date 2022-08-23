@@ -49,6 +49,9 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityAc
 	@Inject(method = "dropLoot", at = @At(value = "HEAD"))
 	private void bella$dropBellOnDeath(DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
 		if ((LivingEntity)(Object)this instanceof AnimalEntity && BellaComponents.BELL_COMPONENT.isProvidedBy(this) && BellaComponents.BELL_COMPONENT.get(this).hasBell()) {
+			if (BellaComponents.BELL_COMPONENT.get(this).isStrung()) {
+				this.dropStack(Items.STRING.getDefaultStack());
+			}
 			this.dropStack(Items.BELL.getDefaultStack());
 		}
 	}
@@ -66,7 +69,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityAc
 				ServerPlayNetworking.send(((ServerWorld)this.world).getPlayers(), BellaPackets.SYNC_BELL_POSITION, buf);
 
 				if ((this.bella$bellPosition - this.bella$prevBellPosition) * (this.bella$prevBellPosition - this.bella$prevPrevBellPosition) < 0.0F && !BellaComponents.BELL_COMPONENT.get(this).isStrung()) {
-					this.world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BLOCK_BELL_USE, this.getSoundCategory(), (float)(Math.abs(bella$bellPosition * Math.PI / 180.0F) / 8.0), this.random.nextFloat() * 0.4F + 1.0F);
+					this.world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BLOCK_BELL_USE, this.getSoundCategory(), (float)(Math.abs(bella$bellPosition * Math.PI / 180.0F) / 4.0), this.random.nextFloat() * 0.4F + 1.0F);
 					this.emitGameEvent(BellaGameEvents.ENTITY_BELL_RING);
 				}
 

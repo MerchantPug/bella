@@ -12,7 +12,9 @@
     "ItemMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
+    "PlayerEntityMixin",
     "PlayerScreenHandlerMixin",
+    "PlayerScreenHandlerSlotMixin",
     "SlotMixin",
     "WolfEntityMixin"
   ],

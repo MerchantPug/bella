@@ -29,7 +29,7 @@ public class SlotMixin implements SlotAccess {
 		this.bella$equipmentSlot = value;
 	}
 
-	@Inject(method = "onTakeItem", at = @At("RETURN"))
+	@Inject(method = "onTakeItem", at = @At("TAIL"))
 	private void bella$removeStringWhenTakingItem(PlayerEntity player, ItemStack stack, CallbackInfo ci) {
 		if (stack.isOf(Items.BELL) && stack.getNbt() != null && stack.getNbt().getCompound("bella:bell").getBoolean("strung")) {
 			ItemStack string = new ItemStack(Items.STRING);
